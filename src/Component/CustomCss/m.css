@@ -1,0 +1,23 @@
+.p3 {
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+.nocontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.image-container {
+  overflow: hidden;
+  margin-bottom: 20px; /* Adjust the margin as needed */
+  max-height: 400px; /* Adjust the max-height as needed */
+}
+
+.img-thumbnail {
+  width: auto;
+  height: 100%;
+  display: block;
+  border: none; /* Remove the border */
+}

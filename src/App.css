@@ -219,3 +219,14 @@
   color: #aaa;
   border-radius: 5px;
 }
+.active {
+  background-color: rgb(228, 91, 17);
+  border-radius: 8px;
+  color: white;
+}
+.nocontainer {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

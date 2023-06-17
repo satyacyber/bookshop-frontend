@@ -1,7 +1,8 @@
 import React from "react";
 import { Carousel } from "react-carousel3";
-import Footer from "./Footer";
+
 import "./CustomCss/Home.css";
+import { Link } from "react-router-dom";
 export default function Home() {
   const imageStyle = {
     maxWidth: "50%",
@@ -10,12 +11,13 @@ export default function Home() {
 
   return (
     <>
-      <div className="my-3">
+      <div>
         <img
-          src="https://store.showit.co/wp-content/uploads/2020/10/Anniversary2020_store-banner-animated.gif"
+          id="banner"
+          src="https://www.safahti.com/images/slides/slider_1_en.gif"
           alt=""
           style={{
-            height: "150px" /* Adjust the height as desired */,
+            height: "18rem" /* Adjust the height as desired */,
             objectFit: "cover",
             width: "100%",
           }}
@@ -25,16 +27,14 @@ export default function Home() {
         <div className="row">
           <div className="col-md-6">
             <div className="my-5">
-              <h1>
-                <mark
-                  style={{
-                    fontFamily: "'Brush Script MT', cursive",
-                    fontStyle: "italic",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Welcome to a World of Words:
-                </mark>
+              <h1
+                style={{
+                  fontFamily: "'Brush Script MT', cursive",
+                  fontStyle: "italic",
+                  fontWeight: "bold",
+                }}
+              >
+                Welcome to a World of Words:
                 <img
                   src="https://media.tenor.com/R_AvsiBDADsAAAAC/book-monster.gif"
                   alt=""
@@ -122,12 +122,13 @@ export default function Home() {
           <button className="button">
             <span className="button_lg">
               <span className="button_sl"></span>
-              <span className="button_text">Explore Now</span>
+              <Link to="/Login" style={{ all: "unset" }}>
+                <span className="button_text">Explore Now</span>
+              </Link>
             </span>
           </button>
         </div>
       </div>
-      <Footer></Footer>
     </>
   );
 }

@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from "axios";
+import Modal from "react-modal";
 
 export default function Login() {
   const myStyle = {
@@ -8,6 +11,44 @@ export default function Login() {
   const widthStyle = {
     width: "185px",
   };
+
+  //UseState Hook in action to see any changes
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  const navigate = useNavigate();
+  const handleEmailchange = (e) => {
+    setEmail(e.target.value);
+  };
+  const handlePasswordchange = (e) => {
+    setPassword(e.target.value);
+  };
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  //Handling submit and making required API call
+  const handlesubmit = (e) => {
+    e.preventDefault();
+    console.log("submit clicked");
+    axios
+      .post("http://localhost:8080/user/login", {
+        emailId: email,
+        password: password,
+      })
+      .then((response) => {
+        // Handle the response data
+        navigate("/");
+        console.log(response.data);
+      })
+      .catch((error) => {
+        // Handle the error
+        console.log("User Not found");
+        setShowModal(true);
+      });
+  };
+
   return (
     <div>
       <section className="h-100 gradient-form" style={myStyle}>
@@ -29,43 +70,45 @@ export default function Login() {
                         </h4>
                       </div>
 
-                      <form>
+                      <form onSubmit={handlesubmit}>
                         <p>Please login to your account</p>
 
-                        <label className="form-label" htmlFor="form2Example11">
-                          Username
+                        <label className="form-label" htmlFor="useremail">
+                          Email
                         </label>
                         <div className="form-outline">
                           <input
                             type="email"
-                            id="form2Example11"
+                            name="useremail"
+                            id="useremail"
                             className="form-control"
                             placeholder="Email address"
+                            onChange={handleEmailchange}
                           />
                         </div>
                         <br />
-                        <label className="form-label " htmlFor="form2Example22">
+
+                        <label className="form-label " htmlFor="userpassword">
                           Password
                         </label>
                         <div className="form-outline">
                           <input
                             type="password"
-                            id="form2Example22"
+                            name="userpassword"
+                            id="userpassword"
                             className="form-control"
                             placeholder="Password"
+                            onChange={handlePasswordchange}
                           />
                         </div>
 
                         <div className="text-center pt-1 my-3 mb-5 pb-1">
                           <button
                             className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                            type="button"
+                            type="submit"
                           >
                             Log in
                           </button>
-                          <a className="text-muted  mx-4" href="/">
-                            Forgot password?
-                          </a>
                         </div>
 
                         <div className="d-flex align-items-center justify-content-center pb-4">
@@ -74,7 +117,9 @@ export default function Login() {
                             type="button"
                             className="btn btn-outline-danger"
                           >
-                            Create new
+                            <Link to="/Signup" style={{ all: "unset" }}>
+                              Create new
+                            </Link>
                           </button>
                         </div>
                       </form>
@@ -82,8 +127,8 @@ export default function Login() {
                   </div>
                   <div className="col-lg-6 d-flex align-items-center">
                     <div className="text-black px-3 py-4 p-md-5 mx-md-4">
-                      <h4 className="mb-4">We are more than just a company</h4>
-                      <p className="small mb-0">
+                      <h4 className="mb-4">We Are Not Just A Company</h4>
+                      <p className="medium mb-0">
                         Unlock the door to a world of endless stories. Welcome
                         to our online bookshop, where imagination knows no
                         bounds
@@ -96,6 +141,17 @@ export default function Login() {
           </div>
         </div>
       </section>
+      <Modal
+        isOpen={showModal}
+        onRequestClose={closeModal}
+        style={{ maxheight: "5rem", maxwidth: "5rem" }}
+      >
+        <h2 className="card-tittle">User Not Found</h2>
+        <p className="card-text">Please check your Credentials</p>
+        <button onClick={closeModal} className="btn btn-danger">
+          Close
+        </button>
+      </Modal>
     </div>
   );
 }

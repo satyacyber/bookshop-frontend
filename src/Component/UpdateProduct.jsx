@@ -1,8 +1,34 @@
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
 export default function UpdateProduct() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [updateItem, setUpdateItem] = useState([]);
+  const [updateId, setupdateId] = useState(" ");
+  useEffect(() => {
+    fetchproductbyId();
+    // eslint-disable-next-line
+  }, []);
+
+  const fetchproductbyId = async () => {
+    if (location.state === null || location.state.id === null) {
+      navigate("/adminlist");
+      return; // Exit the function to prevent further execution
+    }
+    const id = Number(await location.state.id.id);
+    setupdateId(id);
+
+    try {
+      const response = await axios.get(`http://localhost:8080/products/${id}`);
+      setUpdateItem(response.data);
+    } catch {
+      console.log("Api request failed");
+    }
+  };
+
   const initialValues = {
     isbn: "",
     name: "",
@@ -16,10 +42,10 @@ export default function UpdateProduct() {
 
   const ProductSchema = Yup.object({
     isbn: Yup.string().min(2).max(25).required("Please Enter The Isbn"),
-    name: Yup.string().min(2).max(25).required("Please Enter The Book Name"),
+    name: Yup.string().min(2).max(50).required("Please Enter The Book Name"),
     author: Yup.string()
       .min(2)
-      .max(25)
+      .max(50)
       .required("Please Enter The Author Name"),
     imgUrl: Yup.string()
       .min(2)
@@ -27,7 +53,7 @@ export default function UpdateProduct() {
       .required("Please Provide URL for image"),
     category: Yup.string()
       .min(2)
-      .max(25)
+      .max(50)
       .required("Please Enter The Category Of Book"),
     quantity: Yup.number().integer().min(1).required("Enter a valid quantity"),
     description: Yup.string()
@@ -38,15 +64,14 @@ export default function UpdateProduct() {
   });
   const { values, handleBlur, handleChange, errors, touched, handleSubmit } =
     useFormik({
-      initialValues: initialValues,
+      initialValues: updateItem || initialValues,
       validationSchema: ProductSchema,
       validateOnChange: true,
       validateOnBlur: false,
+      enableReinitialize: true,
       onSubmit: (values, action) => {
-        console.log(values);
-        console.log("hii");
         axios
-          .post("http://localhost:8080/addProducts", {
+          .put(`http://localhost:8080/updateProducts/${updateId}`, {
             isbn: values.isbn,
             name: values.name,
             author: values.author,
@@ -58,8 +83,9 @@ export default function UpdateProduct() {
           })
           .then((response) => {
             // Handle the response data
-            window.alert("Product added successfully");
+            window.alert("Product Updated successfully");
             console.log(values);
+            action.resetForm();
           })
           .catch((error) => {
             // Handle the error
@@ -72,7 +98,7 @@ export default function UpdateProduct() {
 
   return (
     <div>
-      <section className="shadow" style={{ backgroundColor: "eee" }}>
+      <section style={{ backgroundColor: "eee" }}>
         <div className="container h-200">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-lg-12 col-xl-11">
@@ -271,6 +297,15 @@ export default function UpdateProduct() {
                             onClick={handleSubmit}
                           >
                             Update
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-danger mx-2"
+                            onClick={(e) => {
+                              navigate("/adminlist");
+                            }}
+                          >
+                            Show List
                           </button>
                         </div>
                       </form>

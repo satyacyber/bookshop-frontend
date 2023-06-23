@@ -1,8 +1,21 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { NavLink } from "react-router-dom";
-
-const Navbar = () => {
+import axios from "axios";
+const Navbar = (props) => {
+  // const navigator = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await axios.get(`http://localhost:8080/user/logout`);
+      console.log("logged out");
+      // window.location.reload();
+      props.setIsloggedin(false);
+      props.setRole("Visitor");
+      //  navigator("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-transparent">
       <div className="container-fluid">
@@ -37,31 +50,64 @@ const Navbar = () => {
                 Home
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/login">
-                Login
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/SignUp">
-                Signup
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/addProduct">
-                AddProduct
-              </NavLink>
-            </li>
+            {props.isloggedin === false && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/login">
+                  Login
+                </NavLink>
+              </li>
+            )}
+            {props.isloggedin === false && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/SignUp">
+                  Signup
+                </NavLink>
+              </li>
+            )}
+            {props.isloggedin === true && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/books">
+                  Books
+                </NavLink>
+              </li>
+            )}
+            {props.isloggedin === true && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/cart">
+                  Cart
+                </NavLink>
+              </li>
+            )}
+            {props.role === "ADMIN" && (
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/adminlist">
+                    AdminList
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/addProduct">
+                    AddProduct
+                  </NavLink>
+                </li>
+              </>
+            )}
             <li className="nav-item">
               <NavLink className="nav-link" to="/about">
                 About
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/UpdateProduct">
-                UpdateProduct
-              </NavLink>
-            </li>
+            {props.isloggedin === true && (
+              <li className="nav-item">
+                <NavLink
+                  className="nav-link"
+                  to="/login"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </NavLink>
+              </li>
+            )}
           </ul>
         </div>
       </div>

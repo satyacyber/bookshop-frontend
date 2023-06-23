@@ -1,36 +1,42 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-export default function Book(isloggedin) {
+
+import { useNavigate } from "react-router-dom";
+
+export default function Adminlist({ setUpid }) {
   const [booklist, setBooklist] = useState([]);
   const [search, setSearch] = useState("");
-  // const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchbooklist();
-  }, []);
+  });
 
   const fetchbooklist = async () => {
     try {
       const response = await axios.get("http://localhost:8080/products");
       setBooklist(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
   };
-  const handleclick = async (pid) => {
+  const handelUpdate = async (pid) => {
     const id = await pid;
-    console.log(id);
-    axios
-      .post(`http://localhost:8080/addToCart/${id}`)
-      .then((response) => {
-        window.alert("Added To Cart");
-      })
-      .catch((error) => {
-        // Handle the error
-        console.log(error);
-      });
+
+    navigate("/updateProduct", { state: { id: { id } } });
+  };
+  const hadelDelete = async (pid) => {
+    const id = await pid;
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/deleteProducts/${id}`
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <Wrapper>
@@ -101,8 +107,8 @@ export default function Book(isloggedin) {
                         <li>ISBN : {item.isbn}</li>
                       </ul>
                       {/* <p className="text-body">
-                      Here are the details of the card
-                    </p> */}
+                        Here are the details of the card
+                      </p> */}
                       <h4
                         style={{
                           position: "absolute",
@@ -114,14 +120,29 @@ export default function Book(isloggedin) {
                         ₹ {item.price}/- Only
                       </h4>
                     </div>
-
-                    <button
-                      type="button"
-                      className="card-button"
-                      onClick={() => handleclick(item.pid)}
+                    <div
+                      className="container"
+                      style={{
+                        position: "absolute",
+                        marginLeft: "90px",
+                        bottom: "0px",
+                        marginBottom: "50px",
+                      }}
                     >
-                      Add To Cart
-                    </button>
+                      <button
+                        className="btn btn-warning mx-3"
+                        onClick={() => handelUpdate(item.pid)}
+                      >
+                        Update
+                      </button>
+
+                      <button
+                        className="btn btn-danger mx-3"
+                        onClick={() => hadelDelete(item.pid)}
+                      >
+                        Delete{" "}
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

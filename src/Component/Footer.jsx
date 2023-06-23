@@ -40,6 +40,7 @@ export default function Footer() {
         className="w-100 bg-light text-center"
         style={{
           position: "sticky",
+          justifyContent: "space-around",
           bottom: "0",
           left: "0",
           marginTop: "40px",

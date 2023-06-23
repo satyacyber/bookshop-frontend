@@ -1,0 +1,86 @@
+import React, { useState, useEffect } from "react";
+import NoPage from "./NoPage";
+import gifImage from "../static/order.gif";
+import bill from "../static/bill.gif";
+import axios from "axios";
+
+const Order = ({ isLoggedIn }) => {
+  const [showGif, setShowGif] = useState(false);
+  const [orderBill, setOrderBill] = useState(null);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setShowGif(true);
+      setTimeout(() => {
+        setShowGif(false);
+      }, 4000);
+      fetchOrderBill(); // Move the fetchOrderBill function call here
+    }
+  }, [isLoggedIn]);
+
+  const fetchOrderBill = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/order/bill");
+      setOrderBill(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching order bill:", error);
+    }
+  };
+
+  if (isLoggedIn) {
+    return (
+      <div className="d-flex align-items-center justify-content-center vh-100">
+        {showGif ? (
+          <div className="text-center">
+            <h3>Order Placed!!!</h3>
+            <img
+              src={gifImage}
+              alt="Loading..."
+              style={{ width: 600, height: 600 }}
+            />
+          </div>
+        ) : (
+          <div className="card shadow-lg" style={{ width: "19rem" }}>
+            <img className="card-img-top" src={bill} alt="Card cap" />
+            <div className="card-body shadow-lg">
+              {orderBill ? (
+                <>
+                  <h5 className="card-title">
+                    Thank you, {orderBill.user.uname}
+                  </h5>
+                  <table className="table table-bordered table-shadow text-center card-body">
+                    <thead>
+                      <tr className="">
+                        <th className="text-center ">Item Name</th>
+                        <th className="text-center ">Quantity</th>
+                        <th className="text-center ">price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orderBill.cart.items.map((items) => (
+                        <tr>
+                          <td>{items.medicine.medName}</td>
+                          <td>{items.quantity}</td>
+                          <td>{items.medicine.price}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  <h5 className="card-text">
+                    Your total amount: {orderBill.amount}
+                  </h5>
+                </>
+              ) : null}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return <NoPage />;
+};
+
+export default Order;

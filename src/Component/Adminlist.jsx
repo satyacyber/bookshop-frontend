@@ -12,7 +12,7 @@ export default function Adminlist({ setUpid }) {
 
   useEffect(() => {
     fetchbooklist();
-  });
+  }, []);
 
   const fetchbooklist = async () => {
     try {

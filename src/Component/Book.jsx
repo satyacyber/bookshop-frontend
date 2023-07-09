@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function Book(isloggedin) {
   const [booklist, setBooklist] = useState([]);
   const [search, setSearch] = useState("");
@@ -25,7 +27,17 @@ export default function Book(isloggedin) {
     axios
       .post(`http://localhost:8080/addToCart/${id}`)
       .then((response) => {
-        window.alert("Added To Cart");
+        // window.alert("Added To Cart");
+        toast.success("Item added to cart ", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       })
       .catch((error) => {
         // Handle the error
@@ -34,6 +46,7 @@ export default function Book(isloggedin) {
   };
   return (
     <Wrapper>
+      <ToastContainer />
       <div>
         <form onChange={(e) => setSearch(e.target.value)}>
           <img
